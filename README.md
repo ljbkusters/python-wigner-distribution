@@ -1,6 +1,9 @@
+
 # The Wigner Distribution
 
 This Wigner distribution, often also Wigner-Ville distribution, is a time-frequency distribution, like the spectrogram, with very interesting properties and a high resolution in both time and space. It has the benefits of ideal resolution properties [1] but it also includes signal-dependent interference terms [1] which are mathematical attributes but do not represent pure signal terms. These interference terms may make interpretation of signals difficult. For this reason, many interference reduction algorithms have been designed. 
+
+![The Wigner Distribution of a pure Sine Wave at 50Hz](wigner_distribution_sine_wave_50hz.png)
 
 This repository aims to implement both the Wigner distribution and a way to reduce interference terms without disturbing auto terms (actually present signals).
 
