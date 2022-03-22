@@ -8,7 +8,7 @@ wigner_toolkit.py
 
 import numpy
 import scipy
-from scipy import signal, linalg
+from scipy import signal, linalg, ndimage
 
 def wigner_distribution(x, use_analytic=True, sample_freq=None, t_0=0, t_1=1, 
                         flip_frequency_range=True):
@@ -73,3 +73,63 @@ def wigner_distribution(x, use_analytic=True, sample_freq=None, t_0=0, t_1=1,
         wigner_distribution = wigner_distribution[::-1, ::]
 
     return wigner_distribution, max_frequency
+
+
+def interference_reduced_wigner_distribution(
+        wigner_distribution, number_smoothing_steps=16,
+        t_filt_max_percentage=0.03, f_filt_max_percentage=0.02):
+    """Method for reducing interference terms based on [1]
+
+    Params:
+        wigner_distribution, array like, N x N discrete wigner distribution
+        matrix
+
+    Returns:
+        interference reduced wigner distribution, N x N ndarray
+
+    Uses a method for interference reduction based on Pikula et al. [1].
+    The method works by executing multiple smoothings using a gaussian
+    filter, in this implementation using the scipy.ndimage module. The
+    optimal smoothing per time-frequency bin is then chosen. Pikula et al.
+    [1] goes into more detail on how this optimal smoothing can be chosen.
+
+    The output is then a distribution which contains mainly autoterms with
+    strongly suppressed interference terms, better representing the actual
+    signal that is present. This, however, destroys many of the
+    distributions' mathematical properties, and should only serve as an
+    analysis tool for autoterms.
+
+    References:
+        [1] Pikula, Stanislav & Beneš, Petr. (2020). A New Method for
+        Interference Reduction in the Smoothed Pseudo Wigner-Ville
+        Distribution. International Journal on Smart Sensing and
+        Intelligent Systems. 7. 1-5. 10.21307/ijssis-2019-101.
+    """
+    # Ensure the input array is a numpy array
+    if not isinstance(wigner_distribution, numpy.ndarray):
+        wigner_distribution = numpy.asarray(wigner_distribution)
+    # Compute the autocorrelation function matrix
+    if wigner_distribution.ndim != 2:
+        raise ValueError("Input data should be a two dimensional discrete"
+                         " wigner distribution.")
+    N_f, N_t = wigner_distribution.shape
+    t_filter_widths = \
+        numpy.linspace(0, N_t * t_filt_max_percentage, number_smoothing_steps)
+    f_filter_widths = \
+        numpy.linspace(0, N_f * f_filt_max_percentage, number_smoothing_steps)
+
+    # filter at various filtration widths
+    smoothed_wigner_distributions = \
+        numpy.zeros((number_smoothing_steps, N_f, N_t))
+    for i, (f_fw, t_fw) in enumerate(zip(t_filter_widths, f_filter_widths)):
+        smoothed_wigner_distributions[i] = \
+            ndimage.gaussian_filter(wigner_distribution, sigma=(f_fw, t_fw))
+
+    # differential analysis per time-frequency bin
+    first_derivative = numpy.diff(smoothed_wigner_distributions, axis=0)
+    smoothing_index_best_guess = numpy.argmax(numpy.abs(first_derivative))
+
+    # choose smoothing per time-frequency bin
+    interference_reduced_wigner_distribution = \
+        smoothed_wigner_distributions[smoothing_index_best_guess, ::, ::]
+    return interference_reduced_wigner_distribution
