@@ -1,0 +1,3 @@
+*.pyc
+*.png
+!figures/wigner_distribution_sine_wave_50hz.png

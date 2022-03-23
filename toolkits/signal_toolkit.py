@@ -12,35 +12,56 @@ import scipy.signal
 
 
 __SampleBase = collections.namedtuple(
-        "__SampleBase", ("samples", "sample_frequency", "t0", "t1"))
+            "__SampleBase",
+            ("samples", "number_of_samples", "sample_frequency", "t0", "t1")
+        )
 
 
-def generate_time_samples(sample_frequency=1e3, t0=0., t1=1.)\
-        -> __SampleBase:
-    """"""
-    time_delta = t1 - t0
-    sample_number = int(float(sample_frequency) / float(time_delta))
-    time_samples = numpy.linspace(t0, t1, sample_number)
-    return __SampleBase(time_samples, sample_frequency, t0, t1)
+class TimeSamples(__SampleBase):
+    """Generalized time samples data structure
+
+    Contains the samples in the form of a numpy.ndarray, the number of samples,
+    the sample frequency, the start time, and the end time.
+
+    Also contains factory methods for defining the time samples based on sample
+    rate or number of samples.
+    """
+
+    @classmethod
+    def from_sample_frequency(cls, sample_frequency, t0=0., t1=1.):
+        time_delta = t1 - t0
+        number_of_samples = int(float(sample_frequency) / float(time_delta))
+        time_samples = numpy.linspace(t0, t1, number_of_samples)
+        return cls(time_samples, number_of_samples, sample_frequency, t0, t1)
+
+    @classmethod
+    def from_sample_number(cls, number_of_samples, t0=0.1, t1=1.):
+        time_delta = t1 - t0
+        sample_frequency = float(float(number_of_samples) / float(time_delta))
+        time_samples = numpy.linspace(t0, t1, number_of_samples)
+        return cls(time_samples, number_of_samples, sample_frequency, t0, t1)
 
 
-def sine_wave(time_samples: __SampleBase, frequency)\
-        -> numpy.ndarray:
+# signal sampled at 1024 Hz for a duration of 1 s
+DEFAULT_TIME_SAMPLES = TimeSamples.from_sample_frequency(sample_frequency=1024)
+
+
+def sine_wave(time_samples, frequency) -> numpy.ndarray:
     """Wrapper for numpy.sin to generate pure sine"""
-    return numpy.sin(time_samples*2*numpy.pi*frequency)
+    omega = 2 * numpy.pi * frequency
+    return numpy.sin(time_samples * omega)
 
 
-def chrip(time_samples, start_frequency, end_frequency, time_end=None)\
-        -> numpy.ndarray:
+def chrip(time_samples, start_frequency,
+          end_frequency, time_end=None) -> numpy.ndarray:
     """Wrapper for scipy.signal.chirp to generate linear chirps"""
     if time_end is None:
-        time_end = numpy.max(time_samples)
-    return scipy.signal.chirp(time_samples, f0=start_frequency,
+        time_end = numpy.max(time_samples.samples)
+    return scipy.signal.chirp(time_samples.samples, f0=start_frequency,
                               t1=time_end, f1=end_frequency)
 
 
-def gaussian(x, mean, std, height=1., bias=0.)\
-        -> numpy.ndarray:
+def gaussian(x, mean, std, height=1., bias=0.) -> numpy.ndarray:
     """Gaussian function
 
     Parameters:
