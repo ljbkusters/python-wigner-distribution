@@ -10,6 +10,7 @@ create_wvd.py
 import numpy
 from matplotlib import pyplot
 from toolkits import wigner_toolkit
+from toolkits import signal_toolkit
 
 
 def plot_wigner_distribution(
@@ -30,20 +31,10 @@ def plot_wigner_distribution(
     return fig, ax
 
 
-def signal_sine_wave(signal_frequency, sample_frequency,
-                     time_min=0, time_max=1):
-    time_delta = time_max - time_min
-    sample_number = int(sample_frequency / time_delta)
-    time_samples = numpy.linspace(time_min, time_max, sample_number)
-    signal = numpy.sin(time_samples*2*numpy.pi*signal_frequency)
-    return signal, time_samples
+TIME_SAMPLES = signal_toolkit.DEFAULT_TIME_SAMPLES
 
-
-SAMPLE_FREQ = 1e3
-SINE_50HZ, _ = \
-        signal_sine_wave(signal_frequency=50, sample_frequency=SAMPLE_FREQ)
-SINE_100HZ, _ = \
-        signal_sine_wave(signal_frequency=100, sample_frequency=SAMPLE_FREQ)
+SINE_50HZ = signal_toolkit.sine_wave(TIME_SAMPLES.samples, frequency=50)
+SINE_100HZ = signal_toolkit.sine_wave(TIME_SAMPLES.samples, frequency=100)
 MIXED_SINES = SINE_50HZ + SINE_100HZ
 
 for (signal, title) in (
@@ -51,5 +42,8 @@ for (signal, title) in (
             (SINE_100HZ, "Wigner Distribution Sine Wave 100Hz"),
             (MIXED_SINES, "Wigner Distribution Mixed Sine 50Hz + 100Hz")
             ):
-    wigner_dist, max_freq = wigner_toolkit.wigner_distribution(signal)
-    plot_wigner_distribution(wigner_dist, title, max_freq=max_freq)
+    wigner_dist, max_freq = wigner_toolkit.wigner_distribution(
+            signal, sample_frequency=TIME_SAMPLES.sample_frequency)
+    plot_wigner_distribution(wigner_dist, title, max_freq=max_freq,
+                             min_time=TIME_SAMPLES.t0,
+                             max_time=TIME_SAMPLES.t1)
