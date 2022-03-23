@@ -10,15 +10,15 @@ import numpy
 from scipy import signal, linalg, ndimage
 
 
-def wigner_distribution(x, use_analytic=True, sample_freq=None, t_0=0, t_1=1,
-                        flip_frequency_range=True):
+def wigner_distribution(x, use_analytic=True, sample_frequency=None,
+                        t_0=0, t_1=1, flip_frequency_range=True):
     """Discrete Pseudo Wigner Ville Distribution based on [1]
 
     Args:
         x, array like, signal input array of length N
         use_analytic, bool, whether or not to use analytic associate of input
             data x by default set to True
-        sample_freq, sampling frequency
+        sample_frequency, sampling frequency
         t_0, time at which the first sample was recorded
         t_1, time at which the last sample was recorded
         flip_frequency_range, flip the data in about the time axis such that
@@ -60,14 +60,14 @@ def wigner_distribution(x, use_analytic=True, sample_freq=None, t_0=0, t_1=1,
     wigner_distribution = numpy.real(numpy.fft.fft(wigner_integrand, axis=1)).T
 
     # calculate sample frequency
-    if sample_freq is None:
-        sample_freq = N / (t_1 - t_0)
+    if sample_frequency is None:
+        sample_frequency = N / (t_1 - t_0)
 
     # calculate frequency range
     if use_analytic:
-        max_frequency = sample_freq/2
+        max_frequency = sample_frequency/2
     else:
-        max_frequency = sample_freq/4
+        max_frequency = sample_frequency/4
 
     # flip the frequency range
     if flip_frequency_range:
