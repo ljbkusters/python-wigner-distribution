@@ -128,9 +128,14 @@ def interference_reduced_wigner_distribution(
 
     # differential analysis per time-frequency bin
     first_derivative = numpy.diff(smoothed_wigner_distributions, axis=0)
-    smoothing_index_best_guess = numpy.argmax(numpy.abs(first_derivative))
+    smoothing_index_best_guess = numpy.argmax(numpy.abs(first_derivative),
+                                              axis=0)
 
     # choose smoothing per time-frequency bin
+    x, y, z = smoothed_wigner_distributions.shape
     interference_reduced_wigner_distribution = \
-        smoothed_wigner_distributions[smoothing_index_best_guess, ::, ::]
+        smoothed_wigner_distributions[
+                smoothing_index_best_guess,
+                numpy.arange(y)[::, numpy.newaxis],
+                numpy.arange(z)[numpy.newaxis, ::]]
     return interference_reduced_wigner_distribution
