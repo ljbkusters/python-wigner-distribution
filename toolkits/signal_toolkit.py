@@ -52,7 +52,7 @@ def sine_wave(time_samples, frequency) -> numpy.ndarray:
     return numpy.sin(time_samples * omega)
 
 
-def chrip(time_samples, start_frequency,
+def chirp(time_samples, start_frequency,
           end_frequency, time_end=None) -> numpy.ndarray:
     """Wrapper for scipy.signal.chirp to generate linear chirps"""
     if time_end is None:
