@@ -1,13 +1,18 @@
-
 # The Wigner Distribution
 
-The Wigner distribution, often also Wigner-Ville distribution, is a time-frequency distribution, like the spectrogram, with very interesting properties and a high resolution in both the time and frequency domains. It has the benefits of ideal resolution properties [1] but it also includes signal-dependent interference terms [1] which are mathematical attributes but do not represent pure signal terms. These interference terms may make interpretation of signals difficult. For this reason, many interference reduction algorithms have been designed. 
+The Wigner distribution, often also Wigner-Ville distribution, is a time-frequency distribution, like the spectrogram, with very interesting properties and a high resolution in both the time and frequency domains. It has the benefits of ideal resolution properties [1] but it also includes signal-dependent interference terms [1] which are mathematical attributes but do not represent pure signal terms.
+
+In certain cases like Quantum state state analysis these interference terms are very informative. In real world time-frequency signal analysis these interference terms may make interpretation of present signals difficult. For this reason, many interference reduction algorithms have been designed. This repository aims to implement both the Wigner distribution and a way to reduce interference terms without disturbing auto terms (actually present signals). A method for interference reduction based on [2] is also provided. Note that applying interference reduction destroys certain mathematical properties of the Wigner distribution.
 
 ![The Wigner Distribution of a pure Sine Wave at 50Hz](figures/wigner_distribution_sine_wave_50hz.png)
+Here we see the Wigner distribution of a pure sine wave at 50Hz. It has great resolution in both the time and frequency domain. The fringes at either end of the time domain are computational artifacts.
 
-This repository aims to implement both the Wigner distribution and a way to reduce interference terms without disturbing auto terms (actually present signals).
+![The Wigner Distribution of two Sine Waves at 50Hz and 100Hz respectively](figures/wigner_distribution_sine_wave_50hz.png)
+Here we see the Wigner distribution of two sine waves, one at 50Hz and one at 100Hz. Right in the middle (at 75Hz) we see an interference pattern with positive and negative values. The signals at 50Hz and 100Hz from are called autoterms (these are present in the input signal), and the interference terms should be ignored when looking at time-frequency analysis of real signals.
 
-A method for interference reduction based on [2] is also provided.
+![Interference Reduced mixed sine wave example](figures/mixed_sine_smoothed_wigner_distribution.png)
+The same signal as the last image was passed into the interference reduced Wigner-distribution. The interference terms are removed and autoterms are maintained with minimal resolution loss.
+
 
 ## An Efficient Implementation
 
@@ -25,6 +30,8 @@ Simply download this repository. It depends only on standard python libraries in
 + matplotlib
 
 Matplotlib is, probably as expected, only required for visualization purposes used in some of the tests. This repository is coded for Python3, Python2 support is not guaranteed.
+
+To install this module, clone this repository, open a terminal and go to the root directory of this repository. Then run `pip install .` or `pip install -e .` for development.
 
 # Tests
 

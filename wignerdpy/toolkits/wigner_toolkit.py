@@ -78,7 +78,7 @@ def wigner_distribution(x, use_analytic=True, sample_frequency=None,
 
 def interference_reduced_wigner_distribution(
         wigner_distribution, number_smoothing_steps=16,
-        t_filt_max_percentage=0.03, f_filt_max_percentage=0.02):
+        t_filt_max_percentage=None, f_filt_max_percentage=None):
     """Method for reducing interference terms based on [1]
 
     Params:
@@ -114,10 +114,16 @@ def interference_reduced_wigner_distribution(
         raise ValueError("Input data should be a two dimensional discrete"
                          " wigner distribution.")
     N_f, N_t = wigner_distribution.shape
+    if t_filt_max_percentage is None:
+        t_filt_max_percentage = 1/(2*number_smoothing_steps)
+    if f_filt_max_percentage is None:
+        f_filt_max_percentage = 1/(2*number_smoothing_steps)
+    print(t_filt_max_percentage, f_filt_max_percentage)
+
     t_filter_widths = \
         numpy.linspace(0, N_t * t_filt_max_percentage, number_smoothing_steps)
     f_filter_widths = \
-        numpy.linspace(0, N_f * f_filt_max_percentage, number_smoothing_steps)
+        numpy.linspace(N_f * f_filt_max_percentage, 0, number_smoothing_steps)
 
     # filter at various filtration widths
     smoothed_wigner_distributions = \
@@ -128,14 +134,15 @@ def interference_reduced_wigner_distribution(
 
     # differential analysis per time-frequency bin
     first_derivative = numpy.diff(smoothed_wigner_distributions, axis=0)
-    smoothing_index_best_guess = numpy.argmax(numpy.abs(first_derivative),
-                                              axis=0)
+    second_derivative = numpy.diff(first_derivative, axis=0)
+    smoothing_index_best_guess = numpy.argmax(second_derivative, axis=0)
 
     # choose smoothing per time-frequency bin
-    x, y, z = smoothed_wigner_distributions.shape
+    smoothing_steps, f_dim, t_dim = smoothed_wigner_distributions.shape
     interference_reduced_wigner_distribution = \
         smoothed_wigner_distributions[
                 smoothing_index_best_guess,
-                numpy.arange(y)[::, numpy.newaxis],
-                numpy.arange(z)[numpy.newaxis, ::]]
+                numpy.arange(f_dim)[::, numpy.newaxis],
+                numpy.arange(t_dim)[numpy.newaxis, ::]]
+
     return interference_reduced_wigner_distribution

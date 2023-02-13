@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 """
 create_wvd.py
-@author Luc Kusters 
-@date 17-03-2022 
-@mail <ljbkusters@gmail.com>
+@author Luc Kusters
+@date 17-03-2022
 """
 
 import numpy
 from matplotlib import pyplot
-from toolkits import wigner_toolkit
-from toolkits import signal_toolkit
+
+import wignerdpy
+from wignerdpy.toolkits import signal_toolkit
 
 
 def plot_wigner_distribution(
@@ -42,8 +42,9 @@ for (signal, title) in (
             (SINE_100HZ, "Wigner Distribution Sine Wave 100Hz"),
             (MIXED_SINES, "Wigner Distribution Mixed Sine 50Hz + 100Hz")
             ):
-    wigner_dist, max_freq = wigner_toolkit.wigner_distribution(
+    wigner_dist, max_freq = wignerdpy.wigner_distribution(
             signal, sample_frequency=TIME_SAMPLES.sample_frequency)
     plot_wigner_distribution(wigner_dist, title, max_freq=max_freq,
                              min_time=TIME_SAMPLES.t0,
                              max_time=TIME_SAMPLES.t1)
+
