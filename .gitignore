@@ -1,3 +1,5 @@
 *.pyc
 *.png
 !figures/wigner_distribution_sine_wave_50hz.png
+!figures/mixed_sine_smoothed_wigner_distribution.png
+!figures/wigner_distribution_mixed_sine_50hz_+_100hz.png

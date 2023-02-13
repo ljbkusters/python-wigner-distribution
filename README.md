@@ -7,7 +7,7 @@ In certain cases like Quantum state state analysis these interference terms are 
 ![The Wigner Distribution of a pure Sine Wave at 50Hz](figures/wigner_distribution_sine_wave_50hz.png)
 Here we see the Wigner distribution of a pure sine wave at 50Hz. It has great resolution in both the time and frequency domain. The fringes at either end of the time domain are computational artifacts.
 
-![The Wigner Distribution of two Sine Waves at 50Hz and 100Hz respectively](figures/wigner_distribution_sine_wave_50hz.png)
+![The Wigner Distribution of two Sine Waves at 50Hz and 100Hz respectively](figures/wigner_distribution_mixed_sine_50hz_+_100hz.png)
 Here we see the Wigner distribution of two sine waves, one at 50Hz and one at 100Hz. Right in the middle (at 75Hz) we see an interference pattern with positive and negative values. The signals at 50Hz and 100Hz from are called autoterms (these are present in the input signal), and the interference terms should be ignored when looking at time-frequency analysis of real signals.
 
 ![Interference Reduced mixed sine wave example](figures/mixed_sine_smoothed_wigner_distribution.png)
