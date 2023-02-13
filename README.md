@@ -13,6 +13,7 @@ Here we see the Wigner distribution of a pure sine wave at 50Hz. It has great re
 Here we see the Wigner distribution of two sine waves, one at 50Hz and one at 100Hz. Right in the middle (at 75Hz) we see an interference pattern with positive and negative values. The signals at 50Hz and 100Hz from are called autoterms (these are present in the input signal), and the interference terms should be ignored when looking at time-frequency analysis of real signals.
 
 ![Interference Reduced mixed sine wave example](figures/mixed_sine_smoothed_wigner_distribution.png)
+
 The same signal as the last image was passed into the interference reduced Wigner-distribution. The interference terms are removed and autoterms are maintained with minimal resolution loss.
 
 
