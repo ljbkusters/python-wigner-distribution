@@ -45,8 +45,9 @@ def wigner_distribution(x, use_analytic=True, sample_frequency=None,
             x = signal.hilbert(x)
         else:
             raise RuntimeError("Keyword 'use_analytic' set to True but signal"
-                               " is of complex data type, but analytic signals"
-                               " must be real valued")
+                               " is of complex data type. The analytic signal"
+                               " can only be computed if the input signal is"
+                               " real valued.")
 
     # calculate the wigner distribution
     N = x.shape[0]
