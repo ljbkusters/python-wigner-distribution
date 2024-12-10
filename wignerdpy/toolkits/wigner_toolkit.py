@@ -26,7 +26,7 @@ def wigner_distribution(x, use_analytic=True, sample_frequency=None,
 
     Returns:
         wigner_distribution, N x N matrix
-        max_frequency, a positive number, the right end of the frequency range centering around zero frequency
+        max_frequency, a positive number, maximum of the frequency range
 
     References:
         [1] T. Claasen & W. Mecklenbraeuker, The Wigner Distribution -- A Tool
